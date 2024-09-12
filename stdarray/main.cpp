@@ -1,17 +1,20 @@
 #pragma once
 #include <iostream>
-#include "myarray.hpp"
-using namespace std;
+#include "myArray.hpp"
 
 int main() {
 	Array<int, 15>a;
 	a.fill(1);
 	a[0] = 2;
 	a[14] = 3;
-	cout << a.front() << " " << a.back() << endl;
+	std::cout << a.front() << " " << a.back() << std::endl;
 	a.at(2) = 5;
-	cout << a[2] << endl;
-	cout << a.at(16) << endl;
-	cout << a[7] << endl;
+	std::cout << a[2] << std::endl;
+	/*std::cout << a.at(16) << std::endl;*/
+	std::cout << a[7] << std::endl;
+	std::cout << a.max_size() << std::endl;
+	Array<int, 0>b;
+	b.fill(2);
+	std::cout << b.front() << " " << b.back() << std::endl;
 	return 0;
 }

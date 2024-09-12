@@ -1,11 +1,11 @@
 #pragma once
-#include "myarray.hpp"
-
-template<typename T , size_t size>
-Array<T,size>::Array() {}
+#include "myArray.hpp"
 
 template<typename T, size_t size>
-T& Array<T, size>::operator[](int index)const {
+Array<T, size>::Array() {}
+
+template<typename T, size_t size>
+T& Array<T, size>::operator[](int index) {
 	if (index < 0) {
 		throw std::out_of_range("element is out of range");
 	}
@@ -13,36 +13,45 @@ T& Array<T, size>::operator[](int index)const {
 }
 
 template<typename T, size_t size>
-T& Array<T, size>::at(int index) const {
+T& Array<T, size>::at(int index) {
 	if (index >= size || index < 0) {
 		throw std::out_of_range("element is out of range");
 	}
-	return arr[index - 1];
+	return arr[index];
 }
 
 template<typename T, size_t size>
-T& Array<T, size>::front()const {
-	if (size != 0) {
-		return arr[0];
+T& Array<T, size>::front() {
+	if (size == 0) {
+		throw std::out_of_range("there is no element");
 	}
-	else {
-		throw std::out_of_range("element is out of range");
-	}
+	return arr[0];
 }
 
 template<typename T, size_t size>
-T& Array<T, size>::back() const{
-	if (size != 0) {
-		return arr[size - 1];
+T& Array<T, size>::back() {
+	if (size == 0) {
+		throw std::out_of_range("there is no element");
 	}
-	else {
-		throw std::out_of_range("element is out of range");
-	}
+	return arr[size - 1];
 }
 
 template<typename T, size_t size>
-T* Array<T, size>::data() const{
+T* Array<T, size>::data() const {
 	return arr;
+}
+
+template <typename T, size_t size>
+bool Array<T, size>::empty() const {
+	if (size != 0) {
+		return false;
+	}
+	return true;
+}
+
+template<typename T, size_t size>
+int Array<T, size>::max_size() const {
+	return size;
 }
 
 template<typename T, size_t size>
