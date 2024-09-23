@@ -1,20 +1,3 @@
-// Your goal is to create a rational number class that would
-// support each of the operations given in main.cpp.
-//
-// In this file you must declare only the interface of your class
-// and implement the given functions separately from the class (at the bottom of
-// this file inside the namespace).
-// Notice that the RationalNumber is a class template, where the
-// template parameter is an integer type for numerator and denominator.
-//
-// Note - Rename the namespace "yourname" to whatever you want, feel creative
-// ( but not too much :) ).
-//
-// After you wrote RationalNumber class and the tests in the main function work
-// - write at the bottom of the file the downsides of such rational numbers,
-// what would you change/remove/add? Would you use such rational numbers instead
-// of double/float numbers? There is no right/wrong answer, this question is
-// more of a philosofical kind than technical.
 #pragma once
 #include <iostream>
 #include <numeric>
@@ -24,249 +7,256 @@ namespace yourname
   class RationalNumber
   {
   public:
-    // RationalNumber();
-    // RationalNumber(T num, T denum): numerator(num), denumerator(denum){};
-    // RationalNumber(T num): numerator(num), denumerator(1){};
-    RationalNumber(T num = 0, T denum = 1) : numerator(num), denumerator(denum)
-    {
-      if (denum == 0)
-      {
-        throw std::invalid_argument("denumerator can't be 0");
-      }
-      simplify();
-    }
+    RationalNumber(T num = 0, T denom = 1);
 
-    void simplify()
-    {
-      T temp = std::gcd(abs(numerator), abs(denumerator));
-      numerator /= temp;
-      denumerator /= temp;
-      // if(numerator < 0 && denumerator < 0){
-      //   numerator *= -1;
-      //   denumerator *= - 1;
-      // }
-      if (denumerator < 0)
-      {
-        denumerator *= -1;
-        numerator *= -1;
-      }
-    }
-
-    friend std::ostream &operator<<(std::ostream &os,
-                                    const RationalNumber<T> &obj)
-    {
-      os << obj.numerator << '/' << obj.denumerator;
-      return os;
-    }
-
-    RationalNumber operator+(const RationalNumber<T> &other)
-    {
-      T temp = std::lcm(other.denumerator, denumerator);
-      RationalNumber res;
-      res.denumerator = temp;
-      res.numerator = (temp / denumerator) * numerator +
-                      (temp / other.denumerator) * other.numerator;
-      res.simplify();
-      return res;
-    }
-    RationalNumber operator-(const RationalNumber<T> &other)
-    {
-      T temp = std::lcm(other.denumerator, denumerator);
-      RationalNumber res;
-      res.denumerator = temp;
-      res.numerator = (temp / denumerator) * numerator -
-                      (temp / other.denumerator) * other.numerator;
-      res.simplify();
-      return res;
-    }
-    RationalNumber operator*(const RationalNumber<T> &other)
-    {
-      RationalNumber res;
-      T temp1 = std::gcd(numerator, other.denumerator);
-      T temp2 = std::gcd(other.numerator, denumerator);
-      res.numerator = (other.numerator / temp2) * (numerator / temp1);
-      res.denumerator = (other.denumerator / temp1) * (denumerator / temp2);
-      res.simplify();
-      return res;
-    }
-    RationalNumber operator/(const RationalNumber<T> &other)
-    {
-      RationalNumber res;
-      res.numerator = numerator * other.denumerator;
-      res.denumerator = denumerator * other.numerator;
-      res.simplify();
-      return res;
-    }
-
-    RationalNumber &operator+=(const RationalNumber<T> &other)
-    {
-      *this = *this + other;
-      simplify();
-      return *this;
-    }
-    RationalNumber &operator*=(const RationalNumber<T> &other)
-    {
-      *this = *this * other;
-      simplify();
-      return *this;
-    }
-    RationalNumber &operator/=(const RationalNumber<T> &other)
-    {
-      *this = *this / other;
-      simplify();
-      return *this;
-    }
-    RationalNumber &operator-=(const RationalNumber<T> &other)
-    {
-      *this = *this - other;
-      simplify();
-      return *this;
-    }
+    RationalNumber &operator+=(const RationalNumber<T> &other);
+    RationalNumber &operator*=(const RationalNumber<T> &other);
+    RationalNumber &operator/=(const RationalNumber<T> &other);
+    RationalNumber &operator-=(const RationalNumber<T> &other);
 
     // prefix increment
-    RationalNumber &operator++()
-    {
-      numerator += denumerator;
-      simplify();
-      return *this;
-    }
+    RationalNumber &operator++();
     // postfix increment
-    RationalNumber operator++(int)
-    {
-      RationalNumber old;
-      numerator += denumerator;
-      simplify();
-      return old;
-    }
+    RationalNumber operator++(int);
 
-    RationalNumber operator+() const { return *this; }
-    RationalNumber operator-()
-    {
-      numerator *= -1;
-      simplify();
-      return *this;
-    }
+    RationalNumber operator+() const;
+    RationalNumber operator-() const;
 
-    friend RationalNumber operator+(T num, const RationalNumber &other)
-    {
-      RationalNumber res;
-      res.numerator = num * other.denumerator + other.numerator;
-      res.denumerator = other.denumerator;
-      res.simplify();
-      return res;
-    }
-    friend RationalNumber operator*(int num, const RationalNumber &other)
-    {
-      RationalNumber res;
-      res.numerator = num * other.numerator;
-      res.denumerator = other.denumerator;
-      res.simplify();
-      return res;
-    }
-    friend RationalNumber operator/(int num, const RationalNumber &other)
-    {
-      RationalNumber res;
-      res.numerator = num * other.denumerator;
-      res.denumerator = other.numerator;
-      res.simplify();
-      return res;
-    }
-    friend RationalNumber operator-(int num, const RationalNumber &other)
-    {
-      RationalNumber res;
-      res.numerator = num * other.denumerator - other.numerator;
-      res.denumerator = other.denumerator;
-      res.simplify();
-      return res;
-    }
+    template <typename U>
+    friend std::ostream &operator<<(std::ostream &os, const RationalNumber<U> &obj);
 
-    bool operator<(const RationalNumber &other) const
-    {
-      if (numerator < 0 && other.numerator > 0)
-      {
-        return true;
-      }
-      if (numerator > 0 && other.numerator < 0)
-      {
-        return false;
-      }
-      if (numerator * other.denumerator < denumerator * other.numerator)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    bool operator>(const RationalNumber &other) const
-    {
-      if (numerator < 0 && other.numerator > 0)
-      {
-        return false;
-      }
-      if (numerator > 0 && other.numerator < 0)
-      {
-        return true;
-      }
-      if (numerator * other.denumerator < denumerator * other.numerator)
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
-    }
-    bool operator<=(const RationalNumber &other) const
-    {
-      if (*this < other || *this == other)
-      {
-        return true;
-      }
-      return false;
-    }
-    bool operator>=(const RationalNumber &other) const
-    {
-      if (*this > other || *this == other)
-      {
-        return true;
-      }
-      return false;
-    }
-    bool operator==(const RationalNumber &other) const
-    {
-      if (numerator == other.numerator && denumerator == other.denumerator)
-      {
-        return true;
-      }
-      return false;
-    }
-    bool operator!=(const RationalNumber &other) const
-    {
-      if (*this == other)
-      {
-        return false;
-      }
-      return true;
-    }
+    template <typename K>
+    friend bool operator<(const RationalNumber<K> &lhs, const RationalNumber<K> &rhs);
+    template <typename K>
+    friend bool operator==(const RationalNumber<K> &lhs, const RationalNumber<K> &rhs);
 
     template <typename Q>
-    operator Q() const
-    {
-      return static_cast<Q>(numerator) / static_cast<Q>(denumerator);
-    }
+    operator Q() const;
 
   private:
     T numerator;
-    T denumerator;
+    T denominator;
+    void simplify();
   };
+
+  template <typename T>
+  template <typename Q>
+  RationalNumber<T>::operator Q() const
+  {
+    return static_cast<Q>(numerator) / static_cast<Q>(denominator);
+  }
+
+  template <typename T>
+  RationalNumber<T>::RationalNumber(T num, T denom) : numerator(num), denominator(denom)
+  {
+    if (denom == 0)
+    {
+      throw std::invalid_argument("dividing by zero");
+    }
+    simplify();
+  }
+
+  template <typename T>
+  void RationalNumber<T>::simplify()
+  {
+    if (denominator < 0)
+    {
+      denominator *= -1;
+      numerator *= -1;
+    }
+    T tnum = numerator < 0 ? -numerator : numerator; // compiler was warning about std::abs(numerator)
+    T temp = std::gcd(tnum, denominator);
+    numerator /= temp;
+    denominator /= temp;
+  }
+
+  template <typename T>
+  RationalNumber<T> &RationalNumber<T>::operator+=(const RationalNumber<T> &other)
+  {
+    T temp = std::lcm(other.denominator, denominator);
+    numerator = (temp / denominator) * numerator + (temp / other.denominator) * other.numerator;
+    denominator = temp;
+    simplify();
+    return *this;
+  }
+  template <typename T>
+  RationalNumber<T> &RationalNumber<T>::operator*=(const RationalNumber<T> &other)
+  {
+    T temp1 = std::gcd(numerator, other.denominator);
+    T temp2 = std::gcd(other.numerator, denominator);
+    numerator = (other.numerator / temp2) * (numerator / temp1);
+    denominator = (other.denominator / temp1) * (denominator / temp2);
+    simplify();
+    return *this;
+  }
+  template <typename T>
+  RationalNumber<T> &RationalNumber<T>::operator/=(const RationalNumber<T> &other)
+  {
+    RationalNumber<T> temp(other.denominator, other.numerator);
+    *this *= temp;
+    return *this;
+  }
+  template <typename T>
+  RationalNumber<T> &RationalNumber<T>::operator-=(const RationalNumber<T> &other)
+  {
+    RationalNumber<T> temp(-other.numerator, other.denominator);
+    *this += temp;
+    return *this;
+  }
+
+  // prefix increment
+  template <typename T>
+  RationalNumber<T> &RationalNumber<T>::operator++()
+  {
+    numerator += denominator;
+    simplify();
+    return *this;
+  }
+  // postfix increment
+  template <typename T>
+  RationalNumber<T> RationalNumber<T>::operator++(int)
+  {
+    RationalNumber<T> old = *this;
+    numerator += denominator;
+    simplify();
+    return old;
+  }
+
+  template <typename T>
+  RationalNumber<T> RationalNumber<T>::operator+() const { return *this; }
+  template <typename T>
+  RationalNumber<T> RationalNumber<T>::operator-() const
+  {
+    RationalNumber<T> temp(numerator, denominator);
+    temp.numerator *= -1;
+    return temp;
+  }
+
+  template <typename T>
+  RationalNumber<T> operator+(RationalNumber<T> lhs, const RationalNumber<T> &rhs)
+  {
+    lhs += rhs;
+    return lhs;
+  }
+  template <typename T>
+  RationalNumber<T> operator-(RationalNumber<T> lhs, const RationalNumber<T> &rhs)
+  {
+    lhs -= rhs;
+    return lhs;
+  }
+  template <typename T>
+  RationalNumber<T> operator*(RationalNumber<T> lhs, const RationalNumber<T> &rhs)
+  {
+    lhs *= rhs;
+    return lhs;
+  }
+  template <typename T>
+  RationalNumber<T> operator/(RationalNumber<T> lhs, const RationalNumber<T> &rhs)
+  {
+    lhs /= rhs;
+    return lhs;
+  }
+
+  template <typename T>
+  RationalNumber<T> operator+(T num, const RationalNumber<T> &other)
+  {
+    RationalNumber<T> res(num);
+    res += other;
+    return res;
+  }
+  template <typename T>
+  RationalNumber<T> operator*(T num, const RationalNumber<T> &other)
+  {
+    RationalNumber<T> res(num);
+    res *= other;
+    return res;
+  }
+  template <typename T>
+  RationalNumber<T> operator/(T num, const RationalNumber<T> &other)
+  {
+    RationalNumber<T> res(num);
+    res /= other;
+    return res;
+  }
+  template <typename T>
+  RationalNumber<T> operator-(T num, const RationalNumber<T> &other)
+  {
+    RationalNumber<T> res(num);
+    res -= other;
+    return res;
+  }
+
+  template <typename T>
+  std::ostream &operator<<(std::ostream &os, const RationalNumber<T> &obj)
+  {
+    os << obj.numerator << '/' << obj.denominator;
+    return os;
+  }
+
+  template <typename T>
+  bool operator<(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs.numerator * rhs.denominator < lhs.denominator * rhs.numerator)
+    {
+      return true;
+    }
+    return false;
+  }
+  template <typename T>
+  bool operator>(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs < rhs || lhs == rhs)
+    {
+      return false;
+    }
+    return true;
+  }
+  template <typename T>
+  bool operator<=(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs < rhs || lhs == rhs)
+    {
+      return true;
+    }
+    return false;
+  }
+  template <typename T>
+  bool operator>=(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs > rhs || lhs == rhs)
+    {
+      return true;
+    }
+    return false;
+  }
+  template <typename T>
+  bool operator==(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs.numerator == rhs.numerator && lhs.denominator == rhs.denominator)
+    {
+      return true;
+    }
+    return false;
+  }
+  template <typename T>
+  bool operator!=(const RationalNumber<T> &lhs, const RationalNumber<T> &rhs)
+  {
+    if (lhs == rhs)
+    {
+      return false;
+    }
+    return true;
+  }
+
   namespace literals
   {
-    // template<typename T>
     RationalNumber<unsigned long long> operator""_r(unsigned long long literal)
     {
-      return RationalNumber(literal);
+      return RationalNumber<unsigned long long>(literal);
     }
   } // namespace literals
-} // namespace yourname
+} // namespace sana
+// i think this kind of rational number is not bad. it could be helpful in certain cases.
+// but if we dealing with big numbers and they cant be reduced in for examaple multiplication,
+// it would be better using double/float numbers, because it could overflow.
+// all in all, choice of realization type depends on the goal.
