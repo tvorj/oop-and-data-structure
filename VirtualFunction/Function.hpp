@@ -1,3 +1,4 @@
+#pragma once
 #include "Book.hpp"
 
 Book *foo(std::size_t x)
