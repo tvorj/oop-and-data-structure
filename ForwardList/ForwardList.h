@@ -28,9 +28,6 @@ public:
     template <typename... Args>
     T &emplace_front(Args &&...args);
 
-    // bool operator==(const ForwardList &other);
-    // bool operator!=(const ForwardList &other);
-
     ForwardList &operator=(const ForwardList &other);
     ForwardList &operator=(ForwardList &&other) noexcept;
 
@@ -70,9 +67,9 @@ public:
     public:
         using difference_type = std::ptrdiff_t;
         using value_type = int;
-        iterator(Node *ptr) : m_iterator(ptr) {}
-        iterator(const const_iterator &other) : m_iterator(other.m_iterator) {}
-        iterator(const iterator &other) : m_iterator(other.m_iterator) {}
+        iterator(Node *ptr);
+        iterator(const const_iterator &other);
+        iterator(const iterator &other);
         bool operator==(const iterator &other) const;
         bool operator!=(const iterator &other) const;
         // prefix
@@ -89,15 +86,14 @@ public:
     private:
         Node *m_iterator;
     };
-    // static_assert(std::forward_iterator<iterator>);
     class const_iterator
     {
     public:
         using difference_type = std::ptrdiff_t;
         using value_type = int;
-        const_iterator(Node *ptr) : m_iterator(ptr) {}
-        const_iterator(const const_iterator &other) : m_iterator(other.m_iterator) {}
-        const_iterator(const iterator &other) : m_iterator(other.m_iterator) {}
+        const_iterator(Node *ptr);
+        const_iterator(const const_iterator &other);
+        const_iterator(const iterator &other);
         bool operator==(const const_iterator &other) const;
         bool operator!=(const const_iterator &other) const;
         // prefix
@@ -114,7 +110,6 @@ public:
     private:
         Node *m_iterator;
     };
-    // static_assert(std::input_iterator<const_iterator>);
 };
 
 template <typename T>
@@ -265,6 +260,10 @@ void ForwardList<T>::push_front(const T &value)
 template <typename T>
 void ForwardList<T>::pop_front()
 {
+    if (fake_head->next == nullptr)
+    {
+        return;
+    }
     Node *temp = fake_head->next;
     fake_head->next = fake_head->next->next;
     delete temp;
@@ -317,42 +316,11 @@ bool operator==(const ForwardList<T> &lhs, const ForwardList<T> &rhs)
     return itL == lhs.end() && itR == rhs.end();
 }
 
-// template <typename T>
-// bool ForwardList<T>::operator==(const ForwardList<T> &other)
-// {
-//     if (m_size != other.m_size)
-//     {
-//         return false;
-//     }
-//     Node *curNodeL = fake_head->next;
-//     Node *curNodeR = other.fake_head->next;
-//     while (curNodeL != nullptr && curNodeR != nullptr)
-//     {
-//         if (curNodeL->data != curNodeR->data)
-//         {
-//             return false;
-//         }
-//         curNodeL = curNodeL->next;
-//         curNodeR = curNodeR->next;
-//     }
-//     return true;
-// }
-
 template <typename T>
 bool operator!=(const ForwardList<T> &lhs, const ForwardList<T> &rhs)
 {
     return !(lhs == rhs);
 }
-
-// template <typename T>
-// bool ForwardList<T>::operator!=(const ForwardList<T> &other)
-// {
-//     if (*this == other)
-//     {
-//         return false;
-//     }
-//     return true;
-// }
 
 template <typename T>
 ForwardList<T> &ForwardList<T>::operator=(const ForwardList<T> &other)
@@ -583,3 +551,17 @@ ForwardList<T>::Node::Node(Args &&...args) : data(std::in_place, std::forward<Ar
 
 template <typename T>
 ForwardList<T>::Node::Node(std::nullopt_t, Node *t_next) : data(std::nullopt), next(t_next){};
+
+template <typename T>
+ForwardList<T>::iterator::iterator(Node *ptr) : m_iterator(ptr) {}
+template <typename T>
+ForwardList<T>::iterator::iterator(const const_iterator &other) : m_iterator(other.m_iterator) {}
+template <typename T>
+ForwardList<T>::iterator::iterator(const iterator &other) : m_iterator(other.m_iterator) {}
+
+template <typename T>
+ForwardList<T>::const_iterator::const_iterator(Node *ptr) : m_iterator(ptr) {}
+template <typename T>
+ForwardList<T>::const_iterator::const_iterator(const const_iterator &other) : m_iterator(other.m_iterator) {}
+template <typename T>
+ForwardList<T>::const_iterator::const_iterator(const iterator &other) : m_iterator(other.m_iterator) {}
