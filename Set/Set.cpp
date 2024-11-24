@@ -1,5 +1,4 @@
 #include "Set.h"
-#include <iostream>
 
 Set::Node::Node(int data) : value(data), left(nullptr), right(nullptr), parent(nullptr), height(1) {}
 
@@ -15,11 +14,8 @@ Set::Set(std::initializer_list<int> init) : root(nullptr), node_count(0)
 
 Set::Set(const Set &other) : root(nullptr), node_count(0)
 {
-    if (other.root != nullptr)
-    {
-        root = copy(other.root, nullptr);
-        node_count = other.node_count;
-    }
+    root = copy(other.root, nullptr);
+    node_count = other.node_count;
 }
 
 Set &Set::operator=(const Set &other)
@@ -28,16 +24,12 @@ Set &Set::operator=(const Set &other)
     {
         return *this;
     }
-
     clear(root);
     root = nullptr;
     node_count = 0;
 
-    if (other.root != nullptr)
-    {
-        root = copy(other.root, nullptr);
-        node_count = other.node_count;
-    }
+    root = copy(other.root, nullptr);
+    node_count = other.node_count;
 
     return *this;
 }
@@ -151,8 +143,14 @@ void Set::erase(Node *node)
         {
             root = nullptr;
         }
+        Node *parent = node->parent;
         delete node;
         node_count--;
+        // while (parent != nullptr)
+        // {
+        //     parent = balance(parent);
+        //     parent = parent->parent;
+        // }
         return;
     }
     if (node->left == nullptr || node->right == nullptr)
@@ -176,8 +174,14 @@ void Set::erase(Node *node)
         {
             root = child;
         }
+        Node *parent = node->parent;
         delete node;
         node_count--;
+        // while (parent != nullptr)
+        // {
+        //     parent = balance(parent);
+        //     parent = parent->parent;
+        // }
         return;
     }
     Node **successor = &(node->right);
@@ -324,6 +328,15 @@ Set::iterator::iterator(Node *ptr) : m_iterator(ptr) {}
 const int &Set::iterator::operator*() const
 {
     return m_iterator->value;
+}
+
+int *Set::iterator::operator->() const
+{
+    if (m_iterator == nullptr)
+    {
+        throw std::out_of_range("Iterator is out of range.");
+    }
+    return &(m_iterator->value);
 }
 
 Set::iterator &Set::iterator::operator++()
@@ -481,5 +494,9 @@ Set::iterator Set::upper_bound(int value)
 
 void Set::erase(iterator it)
 {
+    if (it.m_iterator == nullptr)
+    {
+        throw std::out_of_range("Invalid iterator.");
+    }
     erase(*it);
 }

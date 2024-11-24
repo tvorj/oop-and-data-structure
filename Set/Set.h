@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <initializer_list>
+#include <cstddef>
 /*
   Your task here is to define a set of integers. Since this is not a template class
   you must declare your functions in the header file and define them in .cpp file.
@@ -74,8 +75,8 @@ public:
     using difference_type = std::ptrdiff_t;
     using value_type = const int;
     iterator();
-    iterator(Node *ptr);
     const int &operator*() const;
+    int *operator->() const;
     iterator &operator++();
     iterator operator++(int);
     iterator &operator--();
@@ -86,5 +87,6 @@ public:
 
   private:
     Node *m_iterator;
+    iterator(Node *ptr);
   };
 };
