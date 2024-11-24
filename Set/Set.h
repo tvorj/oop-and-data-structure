@@ -23,6 +23,7 @@ public:
   Set();
   Set(std::initializer_list<int> init);
   Set(const Set &other);
+  Set(Set &&other);
 
   bool empty() const;
   std::size_t size() const;
@@ -30,10 +31,11 @@ public:
   bool contains(int value) const;
   void insert(int value);
   void erase(int value);
+  void clear();
 
   bool operator==(const Set &other) const;
   bool operator!=(const Set &other) const;
-  Set operator=(const Set &other);
+  Set &operator=(const Set &other);
 
   ~Set();
 
@@ -46,9 +48,6 @@ public:
 
   iterator lower_bound(int value);
   iterator upper_bound(int value);
-
-  class const_iterator;
-  const_iterator find(int value) const;
 
 private:
   Node *root;
@@ -79,6 +78,8 @@ public:
     const int &operator*() const;
     iterator &operator++();
     iterator operator++(int);
+    iterator &operator--();
+    iterator operator--(int);
     bool operator==(const iterator &other) const;
     bool operator!=(const iterator &other) const;
     friend class Set;
@@ -86,34 +87,4 @@ public:
   private:
     Node *m_iterator;
   };
-  // class const_iterator
-  // {
-  //   using difference_type = std::ptrdiff_t;
-  //   using value_type = int;
-  //   const_iterator();
-  //   const_iterator(Node *ptr);
-
-  // private:
-  //   Node *m_iterator;
-  // };
-  // class reverse_iterator
-  // {
-  //   using difference_type = std::ptrdiff_t;
-  //   using value_type = int;
-  //   reverse_iterator();
-  //   reverse_iterator(Node *ptr);
-
-  // private:
-  //   Node *m_iterator;
-  // };
-  // class const_reverse_iterator
-  // {
-  //   using difference_type = std::ptrdiff_t;
-  //   using value_type = int;
-  //   const_reverse_iterator();
-  //   const_reverse_iterator(Node *ptr);
-
-  // private:
-  //   Node *m_iterator;
-  // };
 };

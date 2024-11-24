@@ -22,7 +22,7 @@ Set::Set(const Set &other) : root(nullptr), node_count(0)
     }
 }
 
-Set Set::operator=(const Set &other)
+Set &Set::operator=(const Set &other)
 {
     if (this == &other)
     {
@@ -73,6 +73,12 @@ void Set::erase(int value)
     {
         erase(node);
     }
+}
+
+void Set::clear()
+{
+    clear(root);
+    node_count = 0;
 }
 
 Set::Node *Set::insert(Node *node, int value, Node *parent)
@@ -301,10 +307,14 @@ bool Set::operator!=(const Set &other) const
 bool Set::equal(Node *current, Node *other) const
 {
     if (current == nullptr && other == nullptr)
+    {
         return true;
+    }
     if (current == nullptr || other == nullptr)
+    {
         return false;
-    return current->value == other->value && equal(current->left, other->left) && equal(current->right, other->right);
+    }
+    return (current->value == other->value && equal(current->left, other->left) && equal(current->right, other->right));
 }
 
 Set::iterator::iterator() : m_iterator(nullptr) {}
@@ -341,7 +351,6 @@ Set::iterator &Set::iterator::operator++()
         }
         m_iterator = parent;
     }
-
     return *this;
 }
 
@@ -351,11 +360,46 @@ Set::iterator Set::iterator::operator++(int)
     {
         throw std::out_of_range("Iterator cannot be incremented.");
     }
-
     iterator temp = *this;
-
     ++(*this);
+    return temp;
+}
 
+Set::iterator &Set::iterator::operator--()
+{
+    if (m_iterator == nullptr)
+    {
+        throw std::out_of_range("Iterator cannot be decremented.");
+    }
+    if (m_iterator->left != nullptr)
+    {
+        m_iterator = m_iterator->left;
+        while (m_iterator->right != nullptr)
+        {
+            m_iterator = m_iterator->right;
+        }
+    }
+    else
+    {
+        Node *parent = m_iterator->parent;
+        while (parent != nullptr && m_iterator == parent->left)
+        {
+            m_iterator = parent;
+            parent = parent->parent;
+        }
+        m_iterator = parent;
+    }
+    return *this;
+}
+
+Set::iterator Set::iterator::operator--(int)
+{
+    if (m_iterator == nullptr)
+    {
+        throw std::out_of_range("Iterator cannot be decremented.");
+    }
+    iterator temp = *this;
+    --(*this);
     return temp;
 }
 
