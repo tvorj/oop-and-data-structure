@@ -126,6 +126,7 @@ void Set::erase(Node *node)
     {
         return;
     }
+    Node *parent = node->parent;
     if (node->left == nullptr && node->right == nullptr)
     {
         if (node->parent != nullptr)
@@ -143,14 +144,14 @@ void Set::erase(Node *node)
         {
             root = nullptr;
         }
-        Node *parent = node->parent;
         delete node;
         node_count--;
-        // while (parent != nullptr)
-        // {
-        //     parent = balance(parent);
-        //     parent = parent->parent;
-        // }
+
+        while (parent != nullptr)
+        {
+            parent = balance(parent)->parent;
+        }
+
         return;
     }
     if (node->left == nullptr || node->right == nullptr)
@@ -174,14 +175,14 @@ void Set::erase(Node *node)
         {
             root = child;
         }
-        Node *parent = node->parent;
         delete node;
         node_count--;
-        // while (parent != nullptr)
-        // {
-        //     parent = balance(parent);
-        //     parent = parent->parent;
-        // }
+
+        while (parent != nullptr)
+        {
+            parent = balance(parent)->parent;
+        }
+
         return;
     }
     Node **successor = &(node->right);
@@ -191,6 +192,11 @@ void Set::erase(Node *node)
     }
     node->value = std::move((*successor)->value);
     erase(*successor);
+
+    while (parent != nullptr)
+    {
+        parent = balance(parent)->parent;
+    }
 }
 
 int Set::height(Node *node)
@@ -242,6 +248,23 @@ Set::Node *Set::right_rotation(Node *node)
     }
     left->parent = node->parent;
     node->parent = left;
+
+    if (left->parent != nullptr)
+    {
+        if (left->parent->left == node)
+        {
+            left->parent->left = left;
+        }
+        else
+        {
+            left->parent->right = left;
+        }
+    }
+    else
+    {
+        root = left;
+    }
+
     update_height(node);
     update_height(left);
     return left;
@@ -259,6 +282,23 @@ Set::Node *Set::left_rotation(Node *node)
     }
     right->parent = node->parent;
     node->parent = right;
+
+    if (right->parent != nullptr)
+    {
+        if (right->parent->left == node)
+        {
+            right->parent->left = right;
+        }
+        else
+        {
+            right->parent->right = right;
+        }
+    }
+    else
+    {
+        root = right;
+    }
+
     update_height(node);
     update_height(right);
     return right;
@@ -330,7 +370,7 @@ const int &Set::iterator::operator*() const
     return m_iterator->value;
 }
 
-int *Set::iterator::operator->() const
+const int *Set::iterator::operator->() const
 {
     if (m_iterator == nullptr)
     {
@@ -371,7 +411,7 @@ Set::iterator Set::iterator::operator++(int)
 {
     if (m_iterator == nullptr)
     {
-        throw std::out_of_range("Iterator cannot be incremented.");
+        throw std::out_of_range("Iterator cannot be incremented");
     }
     iterator temp = *this;
     ++(*this);
@@ -382,7 +422,7 @@ Set::iterator &Set::iterator::operator--()
 {
     if (m_iterator == nullptr)
     {
-        throw std::out_of_range("Iterator cannot be decremented.");
+        throw std::out_of_range("Iterator cannot be decremented");
     }
     if (m_iterator->left != nullptr)
     {
@@ -409,7 +449,7 @@ Set::iterator Set::iterator::operator--(int)
 {
     if (m_iterator == nullptr)
     {
-        throw std::out_of_range("Iterator cannot be decremented.");
+        throw std::out_of_range("Iterator cannot be decremented");
     }
     iterator temp = *this;
     --(*this);
@@ -496,7 +536,7 @@ void Set::erase(iterator it)
 {
     if (it.m_iterator == nullptr)
     {
-        throw std::out_of_range("Invalid iterator.");
+        throw std::out_of_range("Invalid iterator");
     }
     erase(*it);
 }

@@ -24,7 +24,6 @@ public:
   Set();
   Set(std::initializer_list<int> init);
   Set(const Set &other);
-  Set(Set &&other);
 
   bool empty() const;
   std::size_t size() const;
@@ -76,7 +75,7 @@ public:
     using value_type = const int;
     iterator();
     const int &operator*() const;
-    int *operator->() const;
+    const int *operator->() const;
     iterator &operator++();
     iterator operator++(int);
     iterator &operator--();
