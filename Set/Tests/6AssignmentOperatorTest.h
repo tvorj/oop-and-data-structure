@@ -5,7 +5,7 @@
 #include <algorithm>
 
 namespace test
-{  
+{
   struct AssignmentOperatorTest
   {
     AssignmentOperatorTest()
@@ -21,7 +21,7 @@ namespace test
       set1.insert(30);
       assertBool(set1.contains(30), __LINE__, __FILE__);
       assertBool(!set2.contains(30), __LINE__, __FILE__);
-      assertEqual(set1.size(), set2.size()+1, __LINE__, __FILE__);
+      assertEqual(set1.size(), set2.size() + 1, __LINE__, __FILE__);
       assertBool(set1 != set2, __LINE__, __FILE__);
       assertBool(!(set1 == set2), __LINE__, __FILE__);
     }

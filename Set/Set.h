@@ -23,70 +23,97 @@ public:
   Set();
   Set(std::initializer_list<int> init);
   Set(const Set &other);
+
   bool empty() const;
   std::size_t size() const;
+
   bool contains(int value) const;
   void insert(int value);
   void erase(int value);
-  
+
+  bool operator==(const Set &other) const;
+  bool operator!=(const Set &other) const;
+  Set operator=(const Set &other);
+
+  ~Set();
 
   class iterator;
   iterator find(int value);
+  void erase(iterator it);
+
+  iterator begin();
+  iterator end();
+
+  iterator lower_bound(int value);
+  iterator upper_bound(int value);
 
   class const_iterator;
   const_iterator find(int value) const;
 
 private:
   Node *root;
-  std::size_t size(Node *node) const;
-  Node *insert(Node *node, int value);
+  std::size_t node_count;
+
+  Node *insert(Node *node, int value, Node *parent);
   Node *contains(Node *node, int value) const;
   void erase(Node *node);
   int height(Node *node);
+
   Node *balance(Node *node);
   Node *left_rotation(Node *node);
   Node *right_rotation(Node *node);
   void update_height(Node *node);
 
+  Node *copy(Node *other, Node *parent);
+  bool equal(Node *current, Node *other) const;
+  void clear(Node *node);
+
 public:
   class iterator
   {
+  public:
     using difference_type = std::ptrdiff_t;
-    using value_type = int;
+    using value_type = const int;
     iterator();
     iterator(Node *ptr);
+    const int &operator*() const;
+    iterator &operator++();
+    iterator operator++(int);
+    bool operator==(const iterator &other) const;
+    bool operator!=(const iterator &other) const;
+    friend class Set;
 
   private:
     Node *m_iterator;
   };
-  class const_iterator
-  {
-    using difference_type = std::ptrdiff_t;
-    using value_type = int;
-    const_iterator();
-    const_iterator(Node *ptr);
+  // class const_iterator
+  // {
+  //   using difference_type = std::ptrdiff_t;
+  //   using value_type = int;
+  //   const_iterator();
+  //   const_iterator(Node *ptr);
 
-  private:
-    Node *m_iterator;
-  };
-  class reverse_iterator
-  {
-    using difference_type = std::ptrdiff_t;
-    using value_type = int;
-    reverse_iterator();
-    reverse_iterator(Node *ptr);
+  // private:
+  //   Node *m_iterator;
+  // };
+  // class reverse_iterator
+  // {
+  //   using difference_type = std::ptrdiff_t;
+  //   using value_type = int;
+  //   reverse_iterator();
+  //   reverse_iterator(Node *ptr);
 
-  private:
-    Node *m_iterator;
-  };
-  class const_reverse_iterator
-  {
-    using difference_type = std::ptrdiff_t;
-    using value_type = int;
-    const_reverse_iterator();
-    const_reverse_iterator(Node *ptr);
+  // private:
+  //   Node *m_iterator;
+  // };
+  // class const_reverse_iterator
+  // {
+  //   using difference_type = std::ptrdiff_t;
+  //   using value_type = int;
+  //   const_reverse_iterator();
+  //   const_reverse_iterator(Node *ptr);
 
-  private:
-    Node *m_iterator;
-  };
+  // private:
+  //   Node *m_iterator;
+  // };
 };
