@@ -18,10 +18,10 @@ All your code must be in "ForwardList.h"
 #include "Tests/13MemberAccessIteratorTest.h"
 #include "Tests/14InitializerListConstructorTest.h"
 #include "Tests/15IteratorConstructibleTest.h"
-// #include "Tests/16ClassWithNoDefaultConstructorTest.h"
-// #include "Tests/17InsertTest.h"
-// #include "Tests/18EraseTest.h"
-// #include "Tests/19StlCompatibilityTest.h"
+#include "Tests/16ClassWithNoDefaultConstructorTest.h"
+#include "Tests/17InsertTest.h"
+#include "Tests/18EraseTest.h"
+#include "Tests/19StlCompatibilityTest.h"
 
 #include <iostream>
 #include <optional>
