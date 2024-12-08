@@ -10,17 +10,17 @@ They must behave the same way the std::make_heap, std::pop_heap and std::push_he
 
 int rightChild(std::size_t index)
 {
-    return (index << 1) + 1;
+    return index * 2 + 1;
 }
 
 int leftChild(std::size_t index)
 {
-    return index << 1;
+    return index * 2;
 }
 
 int parent(std::size_t index)
 {
-    return index >> 1;
+    return index / 2;
 }
 
 template <typename iter, typename cmp>
